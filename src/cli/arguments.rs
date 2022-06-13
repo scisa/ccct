@@ -16,7 +16,6 @@ pub struct Args {
 #[derive(Debug)]
 pub struct ArgsEncrypt {
     pub enc_file: String,
-    pub enc_text: String,
 }
 
 #[derive(Debug)]
@@ -61,16 +60,6 @@ impl Args {
                         .takes_value(true)
                         .long(LONG_ARG_ENC_FILE),
                 )
-                .arg(
-                    Arg::new(KEY_ENC_TEXT)
-                        .help(HELP_ENC_TEXT)
-                        .value_name(VALUE_ENC_TEXT)
-                        .required(false)
-                        .short('t')
-                        .takes_value(true)
-                        .long(LONG_ARG_ENC_TEXT)
-                        .default_value(DEFAULT_VALUE_ENC_TEXT),
-                )
         )
         .subcommand(
             Command::new(KEY_DECRYPT)
@@ -110,7 +99,6 @@ impl Args {
 
         ArgsEncrypt {
             enc_file: Self::extract_enc_file(&args, is_enc_mode),
-            enc_text: Self::extract_enc_text(&args, is_enc_mode),
         }
     }
 
@@ -133,25 +121,6 @@ impl Args {
         }
         
         enc_file
-    }
-
-    fn extract_enc_text(args: &ArgMatches, is_enc_mode: bool) -> String {
-        let mut enc_text = String::new();
-        if is_enc_mode {
-            enc_text = match args.subcommand() {
-                Some((KEY_ENCRYPT, sub_matches)) => {
-                    sub_matches.value_of(KEY_ENC_TEXT).unwrap().to_string()
-                }
-                Some((&_, _)) => {
-                    String::from(DEFAULT_VALUE_ENC_TEXT)
-                }
-                None => {
-                    String::from(DEFAULT_VALUE_ENC_TEXT)
-                }
-            };
-        }
-        
-        enc_text
     }
 
     fn extract_args_decrypt(args: &ArgMatches) -> ArgsDecrypt {

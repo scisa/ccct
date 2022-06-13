@@ -12,17 +12,11 @@ pub const HELP_ENC_FILE: &str = "Create an encrypted file";
 pub const VALUE_ENC_FILE: &str = "ENC_FILE";
 pub const LONG_ARG_ENC_FILE: &str = "enc-file";
 
-pub const KEY_ENC_TEXT: &str = "enc_text";
-pub const HELP_ENC_TEXT: &str = "Text to encrypt";
-pub const VALUE_ENC_TEXT: &str = "ENC_TEXT";
-pub const LONG_ARG_ENC_TEXT: &str = "enc-text";
-pub const DEFAULT_VALUE_ENC_TEXT: &str = "Hello World!";
-
 pub const KEY_DECRYPT: &str = "decrypt";
 pub const ABOUT_DECRYPT: &str = "Use tool for decryption";
 
 pub const KEY_DEC_KEY: &str = "dec_key";
-pub const HELP_DEC_KEY: &str = "Key for decryption";
+pub const HELP_DEC_KEY: &str = "Key for decryption in hex-bytes";
 pub const VALUE_DEC_KEY: &str = "DEC_KEY";
 pub const LONG_ARG_DEC_KEY: &str = "dec_key";
 
