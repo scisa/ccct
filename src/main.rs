@@ -1,6 +1,8 @@
 pub mod cli;
 pub mod input;
 pub mod crypt;
+pub mod calc_entropy;
+pub mod insert;
 pub mod output;
 pub mod util;
 
@@ -10,6 +12,7 @@ use crypt::decrypt::Decrypted;
 use input::read_data;
 use output::write_enc_file;
 use output::print_to_cli;
+use calc_entropy::entropy;
 
 
 fn main() {
@@ -19,8 +22,10 @@ fn main() {
     // select mode
     if args.is_enc_mode {
         use_encryption_mode(&args);
-    } else {
+    } else if args.is_dec_mode {
         use_decryption_mode(&args);
+    } else if args.is_insert_key_mode {
+        use_insert_key_mode(&args);
     }
 }
 
@@ -39,11 +44,27 @@ fn use_encryption_mode(args: &Args) {
 }
 
 fn use_decryption_mode(args: &Args) {
-    // let mut enc_data: Vec<u8> = vec![39, 23, 44, 193, 185, 87, 223, 74, 181, 77, 131, 137, 168, 122, 243, 119, 233, 72, 255, 135, 175, 88, 0, 219, 127, 179, 87, 235, 62, 115, 208, 229, 143, 48, 202, 71, 37, 188, 129, 14, 96, 94, 202, 222, 236, 38, 114, 93, 3, 139, 26, 119, 61, 193, 2, 50, 252, 144, 191, 30, 159, 75, 151, 207, 173, 103, 102, 98, 166, 63, 40, 161, 59, 133, 103, 207, 175, 128];
-    let mut enc_bytes = input::read_data::read_enc_data(&args.args_decrypt.dec_file);
+    // read encrypted data
+    let mut enc_bytes = input::read_data::read_byte_data(&args.args_decrypt.dec_file);
 
     // decrypt data
     let decrypted_data = Decrypted::decrypt(&args.args_decrypt.dec_key, &mut enc_bytes);
 
+    // print plaintext to cli
     output::print_to_cli::print_dec_plaintext(&decrypted_data.plaintext);
+}
+
+fn use_insert_key_mode(args: &Args) {
+    // read bytes of file
+    let mut bytes = input::read_data::read_byte_data(&args.args_insert_key.insert_key_file);
+
+    // insert key to bytes
+    insert::insert_key::insert(&args.args_insert_key.insert_key_key, &mut bytes);
+
+    // write back to file
+    output::write_insert_key_file::write_insert_key_file(&args.args_insert_key.insert_key_file, &bytes);
+
+    // display success
+    let entropy = entropy::entropy(&args.args_insert_key.insert_key_key);
+    output::print_to_cli::print_entropy_of_key(entropy);
 }

@@ -13,7 +13,7 @@ pub fn get_data(file_path: &String) -> String {
     data
 }
 
-pub fn read_enc_data(file_path: &String) -> Vec<u8> {
+pub fn read_byte_data(file_path: &String) -> Vec<u8> {
     let bytes = match read_bytes_to_vector(&file_path) {
         Ok(b) => b,
         Err(_) => Vec::new(),
