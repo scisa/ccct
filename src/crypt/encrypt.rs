@@ -2,8 +2,10 @@ use regex::Regex;
 use aes_gcm::{Aes256Gcm, Key, Nonce};
 use aes_gcm::aead::{Aead, NewAead};
 use hex;
+use rand::{thread_rng, Rng};
+use rand::distributions::Alphanumeric;
 
-use crate::util::global_constants::{NONCE, SECRET_KEY};
+use crate::util::global_constants::NONCE;
 use crate::util::exit_codes::EXIT_ENCRYPTION_FAILED;
 use crate::util::error_messages::ERROR_ENCRYPTION_FAILED;
 
@@ -25,7 +27,8 @@ impl Encrypted {
     }
         
     fn encrypt_data(data: &String) -> Self {
-        let key = Key::from_slice(SECRET_KEY.as_bytes());
+        let key_string = Self::generate_random_string();
+        let key = Key::from_slice(key_string.as_bytes());
         let key_string: String = format!("{:#?}", key);
         let cipher = Aes256Gcm::new(key);
     
@@ -44,6 +47,16 @@ impl Encrypted {
             key_hex_string: key_string,
             enc_data: ciphertext,
         }
+    }
+
+    fn generate_random_string() -> String {
+        let rand_string: String = thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(32)
+        .map(char::from)
+        .collect();
+
+        rand_string
     }
 
     fn extract_key_from_string(key_string: &String) -> String {

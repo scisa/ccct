@@ -23,7 +23,7 @@ pub const LONG_ARG_DEC_FILE: &str = "dec-file";
 pub const KEY_DEC_KEY: &str = "dec_key";
 pub const HELP_DEC_KEY: &str = "Key for decryption in hex-bytes";
 pub const VALUE_DEC_KEY: &str = "DEC_KEY";
-pub const LONG_ARG_DEC_KEY: &str = "dec_key";
+pub const LONG_ARG_DEC_KEY: &str = "dec-key";
 
 pub const KEY_INSERT_KEY: &str = "insert_key";
 pub const ABOUT_INSERT_KEY: &str = "Insert a hex key into binary file";
