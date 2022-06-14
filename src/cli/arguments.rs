@@ -154,7 +154,7 @@ impl Args {
         if is_enc_mode {
             enc_file = match args.subcommand() {
                 Some((KEY_ENCRYPT, sub_matches)) => {
-                    sub_matches.value_of(KEY_ENC_FILE).unwrap().to_string()
+                    sub_matches.get_one::<String>(KEY_ENC_FILE).unwrap().to_string()
                 }
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_ENC_FILE_NOT_POSSIBLE);
@@ -184,7 +184,7 @@ impl Args {
         if is_dec_mode {
             dec_file = match args.subcommand() {
                 Some((KEY_DECRYPT, sub_matches)) => {
-                    sub_matches.value_of(KEY_DEC_FILE).unwrap().to_string()
+                    sub_matches.get_one::<String>(KEY_DEC_FILE).unwrap().to_string()
                 }
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_DEC_FILE_NOT_POSSIBLE);
@@ -205,7 +205,7 @@ impl Args {
         if is_dec_mode {
             dec_key = match args.subcommand() {
                 Some((KEY_DECRYPT, sub_matches)) => {
-                    sub_matches.value_of(KEY_DEC_KEY).unwrap().to_string()
+                    sub_matches.get_one::<String>(KEY_DEC_KEY).unwrap().to_string()
                 }
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_DEC_KEY_NOT_POSSIBLE);
@@ -235,7 +235,7 @@ impl Args {
         if is_insert_key_mode {
             insert_key_file = match args.subcommand() {
                 Some((KEY_INSERT_KEY, sub_matches)) => {
-                    sub_matches.value_of(KEY_INSERT_KEY_FILE).unwrap().to_string()
+                    sub_matches.get_one::<String>(KEY_INSERT_KEY_FILE).unwrap().to_string()
                 }
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_INSERT_KEY_FILE_NOT_POSSIBLE);
@@ -256,7 +256,7 @@ impl Args {
         if is_insert_key_mode {
             insert_key_key = match args.subcommand() {
                 Some((KEY_INSERT_KEY, sub_matches)) => {
-                    sub_matches.value_of(KEY_INSERT_KEY_KEY).unwrap().to_string()
+                    sub_matches.get_one::<String>(KEY_INSERT_KEY_KEY).unwrap().to_string()
                 }
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_INSERT_KEY_KEY_NOT_POSSIBLE);

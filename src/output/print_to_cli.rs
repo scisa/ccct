@@ -7,5 +7,5 @@ pub fn print_dec_plaintext(plaintext: &String) {
 }
 
 pub fn print_entropy_of_key(entropy: f32) {
-    println!("{}", entropy);
+    println!("Entropie: {}", entropy);
 }
