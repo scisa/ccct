@@ -1,13 +1,13 @@
-use regex::Regex;
-use aes_gcm::{Aes256Gcm, Key, Nonce};
 use aes_gcm::aead::{Aead, NewAead};
+use aes_gcm::{Aes256Gcm, Key, Nonce};
 use hex;
-use rand::{thread_rng, Rng};
 use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
+use regex::Regex;
 
-use crate::util::global_constants::NONCE;
-use crate::util::exit_codes::EXIT_ENCRYPTION_FAILED;
 use crate::util::error_messages::ERROR_ENCRYPTION_FAILED;
+use crate::util::exit_codes::EXIT_ENCRYPTION_FAILED;
+use crate::util::global_constants::NONCE;
 
 #[derive(Debug)]
 pub struct Encrypted {
@@ -15,34 +15,36 @@ pub struct Encrypted {
     pub enc_data: Vec<u8>,
 }
 
-
 impl Encrypted {
     pub fn encrypt(data: &String) -> Self {
         let mut encryted_data = Self::encrypt_data(&data);
-        
-        let key_hex_string = Self::extract_key_from_string(&encryted_data.key_hex_string);   
+
+        let key_hex_string = Self::extract_key_from_string(&encryted_data.key_hex_string);
         encryted_data.key_hex_string = key_hex_string;
 
         encryted_data
     }
-        
+
     fn encrypt_data(data: &String) -> Self {
         let key_string = Self::generate_random_string();
         let key = Key::from_slice(key_string.as_bytes());
         let key_string: String = format!("{:#?}", key);
         let cipher = Aes256Gcm::new(key);
-    
+
         let mut buffer: Vec<u8> = vec![0; data.as_bytes().len() + 16]; // Buffer needs 16-bytes overhead for GCM tag
         buffer.extend_from_slice(data.as_bytes());
-    
-        let ciphertext = match cipher.encrypt(Nonce::from_slice(NONCE.as_bytes()), data.as_bytes().as_ref()) {
+
+        let ciphertext = match cipher.encrypt(
+            Nonce::from_slice(NONCE.as_bytes()),
+            data.as_bytes().as_ref(),
+        ) {
             Ok(c) => c,
             Err(e) => {
                 eprintln!("{}: {}", ERROR_ENCRYPTION_FAILED, e);
                 std::process::exit(EXIT_ENCRYPTION_FAILED);
-            }  
+            }
         };
-    
+
         Self {
             key_hex_string: key_string,
             enc_data: ciphertext,
@@ -51,10 +53,10 @@ impl Encrypted {
 
     fn generate_random_string() -> String {
         let rand_string: String = thread_rng()
-        .sample_iter(&Alphanumeric)
-        .take(32)
-        .map(char::from)
-        .collect();
+            .sample_iter(&Alphanumeric)
+            .take(32)
+            .map(char::from)
+            .collect();
 
         rand_string
     }
@@ -65,7 +67,7 @@ impl Encrypted {
         for cap in re.captures_iter(key_string) {
             key.push(std::str::FromStr::from_str(&cap[0]).unwrap());
         }
-    
+
         hex::encode(key)
     }
 }

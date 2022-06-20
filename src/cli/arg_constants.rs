@@ -3,7 +3,6 @@ pub const APP_VERSION: &str = "0.1.0";
 pub const APP_AUTHOR: &str = "scisa <scisa@web.de>";
 pub const APP_DESCRIPTION: &str = "Communicative Cipher Crypto Tool";
 
-
 pub const KEY_ENCRYPT: &str = "encrypt";
 pub const ABOUT_ENCRYPT: &str = "Use tool for encryption";
 

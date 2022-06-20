@@ -11,8 +11,8 @@ pub struct Args {
     pub is_dec_mode: bool,
     pub is_insert_key_mode: bool,
     pub args_encrypt: ArgsEncrypt,
-    pub args_decrypt: ArgsDecrypt,  
-    pub args_insert_key: ArgsInsertKey,    
+    pub args_decrypt: ArgsDecrypt,
+    pub args_insert_key: ArgsInsertKey,
 }
 
 #[derive(Debug)]
@@ -23,15 +23,14 @@ pub struct ArgsEncrypt {
 #[derive(Debug)]
 pub struct ArgsDecrypt {
     pub dec_file: String,
-    pub dec_key: String, 
+    pub dec_key: String,
 }
 
 #[derive(Debug)]
 pub struct ArgsInsertKey {
     pub insert_key_file: String,
-    pub insert_key_key: String, 
+    pub insert_key_key: String,
 }
-
 
 impl Args {
     pub fn get_args() -> Self {
@@ -56,13 +55,11 @@ impl Args {
 
     fn parse_args() -> Result<ArgMatches, Box<dyn Error>> {
         let matches = Command::new(APP_NAME)
-        .version(APP_VERSION)
-        .author(APP_AUTHOR)
-        .about(APP_DESCRIPTION)
-        .subcommand(
-            Command::new(KEY_ENCRYPT)
-                .about(ABOUT_ENCRYPT)
-                .arg(
+            .version(APP_VERSION)
+            .author(APP_AUTHOR)
+            .about(APP_DESCRIPTION)
+            .subcommand(
+                Command::new(KEY_ENCRYPT).about(ABOUT_ENCRYPT).arg(
                     Arg::new(KEY_ENC_FILE)
                         .help(HELP_ENC_FILE)
                         .value_name(VALUE_ENC_FILE)
@@ -70,53 +67,53 @@ impl Args {
                         .short('o')
                         .takes_value(true)
                         .long(LONG_ARG_ENC_FILE),
-                )
-        )
-        .subcommand(
-            Command::new(KEY_DECRYPT)
-                .about(ABOUT_DECRYPT)
-                .arg(
-                    Arg::new(KEY_DEC_FILE)
-                        .help(HELP_DEC_FILE)
-                        .value_name(VALUE_DEC_FILE)
-                        .required(true)
-                        .short('i')
-                        .takes_value(true)
-                        .long(LONG_ARG_DEC_FILE),
-                )
-                .arg(
-                    Arg::new(KEY_DEC_KEY)
-                        .help(HELP_DEC_KEY)
-                        .value_name(VALUE_DEC_KEY)
-                        .required(true)
-                        .short('k')
-                        .takes_value(true)
-                        .long(LONG_ARG_DEC_KEY),
-                )
-        )
-        .subcommand(
-            Command::new(KEY_INSERT_KEY)
-                .about(ABOUT_INSERT_KEY)
-                .arg(
-                    Arg::new(KEY_INSERT_KEY_FILE)
-                        .help(HELP_INSERT_KEY_FILE)
-                        .value_name(VALUE_INSERT_KEY_FILE)
-                        .required(true)
-                        .short('f')
-                        .takes_value(true)
-                        .long(LONG_ARG_INSERT_KEY_FILE),
-                )
-                .arg(
-                    Arg::new(KEY_INSERT_KEY_KEY)
-                        .help(HELP_INSERT_KEY_KEY)
-                        .value_name(VALUE_INSERT_KEY_KEY)
-                        .required(true)
-                        .short('k')
-                        .takes_value(true)
-                        .long(LONG_ARG_INSERT_KEY_KEY),
-                )
-        )
-        .get_matches();
+                ),
+            )
+            .subcommand(
+                Command::new(KEY_DECRYPT)
+                    .about(ABOUT_DECRYPT)
+                    .arg(
+                        Arg::new(KEY_DEC_FILE)
+                            .help(HELP_DEC_FILE)
+                            .value_name(VALUE_DEC_FILE)
+                            .required(true)
+                            .short('i')
+                            .takes_value(true)
+                            .long(LONG_ARG_DEC_FILE),
+                    )
+                    .arg(
+                        Arg::new(KEY_DEC_KEY)
+                            .help(HELP_DEC_KEY)
+                            .value_name(VALUE_DEC_KEY)
+                            .required(true)
+                            .short('k')
+                            .takes_value(true)
+                            .long(LONG_ARG_DEC_KEY),
+                    ),
+            )
+            .subcommand(
+                Command::new(KEY_INSERT_KEY)
+                    .about(ABOUT_INSERT_KEY)
+                    .arg(
+                        Arg::new(KEY_INSERT_KEY_FILE)
+                            .help(HELP_INSERT_KEY_FILE)
+                            .value_name(VALUE_INSERT_KEY_FILE)
+                            .required(true)
+                            .short('f')
+                            .takes_value(true)
+                            .long(LONG_ARG_INSERT_KEY_FILE),
+                    )
+                    .arg(
+                        Arg::new(KEY_INSERT_KEY_KEY)
+                            .help(HELP_INSERT_KEY_KEY)
+                            .value_name(VALUE_INSERT_KEY_KEY)
+                            .required(true)
+                            .short('k')
+                            .takes_value(true)
+                            .long(LONG_ARG_INSERT_KEY_KEY),
+                    ),
+            )
+            .get_matches();
         Ok(matches)
     }
 
@@ -153,9 +150,10 @@ impl Args {
         let mut enc_file = String::new();
         if is_enc_mode {
             enc_file = match args.subcommand() {
-                Some((KEY_ENCRYPT, sub_matches)) => {
-                    sub_matches.get_one::<String>(KEY_ENC_FILE).unwrap().to_string()
-                }
+                Some((KEY_ENCRYPT, sub_matches)) => sub_matches
+                    .get_one::<String>(KEY_ENC_FILE)
+                    .unwrap()
+                    .to_string(),
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_ENC_FILE_NOT_POSSIBLE);
                     std::process::exit(EXIT_EXTRACTING_ENC_FILE_FAILED);
@@ -166,7 +164,7 @@ impl Args {
                 }
             };
         }
-        
+
         enc_file
     }
 
@@ -175,7 +173,7 @@ impl Args {
 
         ArgsDecrypt {
             dec_file: Self::extract_dec_file(&args, is_dec_mode),
-            dec_key: Self::extract_dec_key(&args, is_dec_mode)
+            dec_key: Self::extract_dec_key(&args, is_dec_mode),
         }
     }
 
@@ -183,9 +181,10 @@ impl Args {
         let mut dec_file = String::new();
         if is_dec_mode {
             dec_file = match args.subcommand() {
-                Some((KEY_DECRYPT, sub_matches)) => {
-                    sub_matches.get_one::<String>(KEY_DEC_FILE).unwrap().to_string()
-                }
+                Some((KEY_DECRYPT, sub_matches)) => sub_matches
+                    .get_one::<String>(KEY_DEC_FILE)
+                    .unwrap()
+                    .to_string(),
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_DEC_FILE_NOT_POSSIBLE);
                     std::process::exit(EXIT_EXTRACTING_DEC_FILE_FAILED);
@@ -196,7 +195,7 @@ impl Args {
                 }
             };
         }
-        
+
         dec_file
     }
 
@@ -204,9 +203,10 @@ impl Args {
         let mut dec_key = String::new();
         if is_dec_mode {
             dec_key = match args.subcommand() {
-                Some((KEY_DECRYPT, sub_matches)) => {
-                    sub_matches.get_one::<String>(KEY_DEC_KEY).unwrap().to_string()
-                }
+                Some((KEY_DECRYPT, sub_matches)) => sub_matches
+                    .get_one::<String>(KEY_DEC_KEY)
+                    .unwrap()
+                    .to_string(),
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_DEC_KEY_NOT_POSSIBLE);
                     std::process::exit(EXIT_EXTRACTING_DEC_KEY_FAILED);
@@ -217,7 +217,7 @@ impl Args {
                 }
             };
         }
-        
+
         dec_key
     }
 
@@ -234,9 +234,10 @@ impl Args {
         let mut insert_key_file = String::new();
         if is_insert_key_mode {
             insert_key_file = match args.subcommand() {
-                Some((KEY_INSERT_KEY, sub_matches)) => {
-                    sub_matches.get_one::<String>(KEY_INSERT_KEY_FILE).unwrap().to_string()
-                }
+                Some((KEY_INSERT_KEY, sub_matches)) => sub_matches
+                    .get_one::<String>(KEY_INSERT_KEY_FILE)
+                    .unwrap()
+                    .to_string(),
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_INSERT_KEY_FILE_NOT_POSSIBLE);
                     std::process::exit(EXIT_EXTRACTING_INSERT_KEY_FILE_FAILED);
@@ -247,7 +248,7 @@ impl Args {
                 }
             };
         }
-        
+
         insert_key_file
     }
 
@@ -255,9 +256,10 @@ impl Args {
         let mut insert_key_key = String::new();
         if is_insert_key_mode {
             insert_key_key = match args.subcommand() {
-                Some((KEY_INSERT_KEY, sub_matches)) => {
-                    sub_matches.get_one::<String>(KEY_INSERT_KEY_KEY).unwrap().to_string()
-                }
+                Some((KEY_INSERT_KEY, sub_matches)) => sub_matches
+                    .get_one::<String>(KEY_INSERT_KEY_KEY)
+                    .unwrap()
+                    .to_string(),
                 Some((&_, _)) => {
                     eprintln!("{}", ERROR_EXTRACTING_INSERT_KEY_KEY_NOT_POSSIBLE);
                     std::process::exit(EXIT_EXTRACTING_INSERT_KEY_KEY_FAILED);
@@ -268,7 +270,7 @@ impl Args {
                 }
             };
         }
-        
+
         insert_key_key
     }
 }

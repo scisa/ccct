@@ -1,19 +1,18 @@
-pub mod cli;
-pub mod input;
-pub mod crypt;
 pub mod calc_entropy;
+pub mod cli;
+pub mod crypt;
+pub mod input;
 pub mod insert;
 pub mod output;
 pub mod util;
 
-use cli::arguments::Args;
-use crypt::encrypt::Encrypted;
-use crypt::decrypt::Decrypted;
-use input::read_data;
-use output::write_enc_file;
-use output::print_to_cli;
 use calc_entropy::entropy;
-
+use cli::arguments::Args;
+use crypt::decrypt::Decrypted;
+use crypt::encrypt::Encrypted;
+use input::read_data;
+use output::print_to_cli;
+use output::write_enc_file;
 
 fn main() {
     // fetch args
@@ -32,7 +31,7 @@ fn main() {
 fn use_encryption_mode(args: &Args) {
     // read in file
     let data = read_data::get_data(&args.args_encrypt.enc_file);
-    
+
     // encrypt read in data
     let encrypted_data = Encrypted::encrypt(&data);
 
@@ -62,7 +61,10 @@ fn use_insert_key_mode(args: &Args) {
     insert::insert_key::insert(&args.args_insert_key.insert_key_key, &mut bytes);
 
     // write back to file
-    output::write_insert_key_file::write_insert_key_file(&args.args_insert_key.insert_key_file, &bytes);
+    output::write_insert_key_file::write_insert_key_file(
+        &args.args_insert_key.insert_key_file,
+        &bytes,
+    );
 
     // display success
     let entropy = entropy::entropy(&args.args_insert_key.insert_key_key);

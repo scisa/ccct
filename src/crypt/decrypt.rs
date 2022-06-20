@@ -1,11 +1,10 @@
-use aes_gcm::{Aes256Gcm, Key, Nonce};
 use aes_gcm::aead::{Aead, NewAead};
+use aes_gcm::{Aes256Gcm, Key, Nonce};
 
-use crate::util::global_constants::NONCE;
 use crate::util::error_messages::ERROR_DECRYPTION_FAILED;
 use crate::util::exit_codes::EXIT_DECRYPTION_FAILED;
+use crate::util::global_constants::NONCE;
 use crate::util::helper;
-
 
 #[derive(Debug)]
 pub struct Decrypted {

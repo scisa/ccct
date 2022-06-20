@@ -3,7 +3,6 @@ use std::io::{self, BufReader, Read};
 
 use crate::util::global_constants::DEFAULT_INPUT_TEXT;
 
-
 pub fn get_data(file_path: &String) -> String {
     let data = match fs::read_to_string(file_path) {
         Ok(d) => d,
