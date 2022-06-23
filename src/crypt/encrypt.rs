@@ -4,6 +4,7 @@ use hex;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use regex::Regex;
+use sha2::{Sha256, Digest};
 
 use crate::util::error_messages::ERROR_ENCRYPTION_FAILED;
 use crate::util::exit_codes::EXIT_ENCRYPTION_FAILED;
@@ -27,7 +28,10 @@ impl Encrypted {
 
     fn encrypt_data(data: &String) -> Self {
         let key_string = Self::generate_random_string();
-        let key = Key::from_slice(key_string.as_bytes());
+        let mut hasher = Sha256::new();
+        hasher.update(key_string.as_bytes());
+        let key_hash = hasher.finalize();
+        let key = Key::from_slice(&key_hash);
         let key_string: String = format!("{:#?}", key);
         let cipher = Aes256Gcm::new(key);
 
