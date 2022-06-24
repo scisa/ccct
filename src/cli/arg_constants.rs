@@ -11,6 +11,11 @@ pub const HELP_ENC_FILE: &str = "Create an encrypted file";
 pub const VALUE_ENC_FILE: &str = "ENC_FILE";
 pub const LONG_ARG_ENC_FILE: &str = "enc-file";
 
+pub const KEY_NO_HASH: &str = "no_hash";
+pub const HELP_NO_HASH: &str = "Do not hash key for lower entropy";
+pub const VALUE_NO_HASH: &str = "NO_HASH";
+pub const LONG_NO_HASH: &str = "no-hash";
+
 pub const KEY_DECRYPT: &str = "decrypt";
 pub const ABOUT_DECRYPT: &str = "Use tool for decryption";
 

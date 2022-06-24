@@ -18,6 +18,7 @@ pub struct Args {
 #[derive(Debug)]
 pub struct ArgsEncrypt {
     pub enc_file: String,
+    pub no_hash: bool,
 }
 
 #[derive(Debug)]
@@ -59,15 +60,27 @@ impl Args {
             .author(APP_AUTHOR)
             .about(APP_DESCRIPTION)
             .subcommand(
-                Command::new(KEY_ENCRYPT).about(ABOUT_ENCRYPT).arg(
-                    Arg::new(KEY_ENC_FILE)
-                        .help(HELP_ENC_FILE)
-                        .value_name(VALUE_ENC_FILE)
-                        .required(true)
-                        .short('o')
-                        .takes_value(true)
-                        .long(LONG_ARG_ENC_FILE),
-                ),
+                Command::new(KEY_ENCRYPT)
+                    .about(ABOUT_ENCRYPT)
+                    .arg(
+                        Arg::new(KEY_ENC_FILE)
+                            .help(HELP_ENC_FILE)
+                            .value_name(VALUE_ENC_FILE)
+                            .required(true)
+                            .short('i')
+                            .takes_value(true)
+                            .long(LONG_ARG_ENC_FILE),
+                    )
+                    .arg(
+                        Arg::new(KEY_NO_HASH)
+                            .help(HELP_NO_HASH)
+                            .value_name(VALUE_NO_HASH)
+                            .required(false)
+                            .short('n')
+                            .takes_value(false)
+                            .long(LONG_NO_HASH),
+                    ),
+                
             )
             .subcommand(
                 Command::new(KEY_DECRYPT)
@@ -99,7 +112,7 @@ impl Args {
                             .help(HELP_INSERT_KEY_FILE)
                             .value_name(VALUE_INSERT_KEY_FILE)
                             .required(true)
-                            .short('f')
+                            .short('i')
                             .takes_value(true)
                             .long(LONG_ARG_INSERT_KEY_FILE),
                     )
@@ -143,6 +156,7 @@ impl Args {
 
         ArgsEncrypt {
             enc_file: Self::extract_enc_file(&args, is_enc_mode),
+            no_hash: Self::extract_no_hash(&args, is_enc_mode),
         }
     }
 
@@ -166,6 +180,25 @@ impl Args {
         }
 
         enc_file
+    }
+
+    fn extract_no_hash(args: &ArgMatches, is_enc_mode: bool) -> bool {
+        let mut no_hash = false;
+        if is_enc_mode {
+            no_hash = match args.subcommand() {
+                Some((KEY_ENCRYPT, sub_matches)) => sub_matches.contains_id(KEY_NO_HASH),
+                Some((&_, _)) => {
+                    eprintln!("{}", ERROR_EXTRACTING_ENC_FILE_NOT_POSSIBLE);
+                    std::process::exit(EXIT_EXTRACTING_ENC_FILE_FAILED);
+                }
+                None => {
+                    eprintln!("{}", ERROR_EXTRACTING_ENC_FILE_NOT_POSSIBLE);
+                    std::process::exit(EXIT_EXTRACTING_ENC_FILE_FAILED);
+                }
+            };
+        }
+
+        no_hash
     }
 
     fn extract_args_decrypt(args: &ArgMatches) -> ArgsDecrypt {

@@ -33,7 +33,7 @@ fn use_encryption_mode(args: &Args) {
     let data = read_data::get_data(&args.args_encrypt.enc_file);
 
     // encrypt read in data
-    let encrypted_data = Encrypted::encrypt(&data);
+    let encrypted_data = Encrypted::encrypt(&data, args.args_encrypt.no_hash);
 
     // write to encrypted file
     write_enc_file::write_encrypted_file(&args.args_encrypt.enc_file, &encrypted_data.enc_data);

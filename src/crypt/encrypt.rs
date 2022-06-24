@@ -3,7 +3,6 @@ use aes_gcm::{Aes256Gcm, Key, Nonce};
 use hex;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
-use regex::Regex;
 use sha2::{Sha256, Digest};
 
 use crate::util::error_messages::ERROR_ENCRYPTION_FAILED;
@@ -17,24 +16,31 @@ pub struct Encrypted {
 }
 
 impl Encrypted {
-    pub fn encrypt(data: &String) -> Self {
-        let mut encryted_data = Self::encrypt_data(&data);
-
-        let key_hex_string = Self::extract_key_from_string(&encryted_data.key_hex_string);
-        encryted_data.key_hex_string = key_hex_string;
+    pub fn encrypt(data: &String, no_hash: bool) -> Self {
+        let encryted_data = Self::encrypt_data(&data, no_hash);
 
         encryted_data
     }
 
-    fn encrypt_data(data: &String) -> Self {
-        let key_string = Self::generate_random_string();
-        let mut hasher = Sha256::new();
-        hasher.update(key_string.as_bytes());
-        let key_hash = hasher.finalize();
-        let key = Key::from_slice(&key_hash);
-        let key_string: String = format!("{:#?}", key);
-        let cipher = Aes256Gcm::new(key);
+    fn encrypt_data(data: &String, no_hash: bool) -> Self {
+        let cipher;
+        let key_string;
+        if no_hash {
+            let key_random = Self::generate_random_string();
+            let key = Key::from_slice(key_random.as_bytes());
+            key_string = hex::encode(&key_random);
+            cipher = Aes256Gcm::new(key);
+        } else {
+            let key_random = Self::generate_random_string();
+            let mut hasher = Sha256::new();
+            hasher.update(key_random.as_bytes());
+            let key_hash = hasher.finalize();
+            let key = Key::from_slice(&key_hash);
+            cipher = Aes256Gcm::new(key);
+            key_string = hex::encode(&key_hash);   
+        }
 
+        
         let mut buffer: Vec<u8> = vec![0; data.as_bytes().len() + 16]; // Buffer needs 16-bytes overhead for GCM tag
         buffer.extend_from_slice(data.as_bytes());
 
@@ -63,15 +69,5 @@ impl Encrypted {
             .collect();
 
         rand_string
-    }
-
-    fn extract_key_from_string(key_string: &String) -> String {
-        let mut key: Vec<u8> = Vec::new();
-        let re = Regex::new(r"\d+").unwrap();
-        for cap in re.captures_iter(key_string) {
-            key.push(std::str::FromStr::from_str(&cap[0]).unwrap());
-        }
-
-        hex::encode(key)
     }
 }
