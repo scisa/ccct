@@ -80,7 +80,6 @@ impl Args {
                             .takes_value(false)
                             .long(LONG_NO_HASH),
                     ),
-                
             )
             .subcommand(
                 Command::new(KEY_DECRYPT)

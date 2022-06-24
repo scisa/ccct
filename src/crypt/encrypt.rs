@@ -3,7 +3,7 @@ use aes_gcm::{Aes256Gcm, Key, Nonce};
 use hex;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
-use sha2::{Sha256, Digest};
+use sha2::{Digest, Sha256};
 
 use crate::util::error_messages::ERROR_ENCRYPTION_FAILED;
 use crate::util::exit_codes::EXIT_ENCRYPTION_FAILED;
@@ -37,10 +37,9 @@ impl Encrypted {
             let key_hash = hasher.finalize();
             let key = Key::from_slice(&key_hash);
             cipher = Aes256Gcm::new(key);
-            key_string = hex::encode(&key_hash);   
+            key_string = hex::encode(&key_hash);
         }
 
-        
         let mut buffer: Vec<u8> = vec![0; data.as_bytes().len() + 16]; // Buffer needs 16-bytes overhead for GCM tag
         buffer.extend_from_slice(data.as_bytes());
 
